@@ -3,6 +3,8 @@ require_relative 'udacidata'
 class Product < Udacidata
   attr_reader :id, :price, :brand, :name
 
+@@products = []
+
   def initialize(opts={})
 
     # Get last ID from the database if ID exists
@@ -15,7 +17,18 @@ class Product < Udacidata
     @brand = opts[:brand]
     @name = opts[:name]
     @price = opts[:price]
+    @@products << self
+    save_to_file([@id, @brand, @name, @price])
   end
+
+  def self.create(*args, &block)
+    return self.new(*args, &block)
+  end
+
+  def self.all
+    return @@products
+  end
+
 
   private
 
