@@ -6,7 +6,6 @@ class Udacidata
   # Your code goes here!
 
   def save_to_file(data_array)
-    #puts 'hello here i am'
     @data_path = File.dirname(__FILE__) + "/../data/data.csv"
     CSV.open(@data_path, "a+") do |csv|
        csv << data_array

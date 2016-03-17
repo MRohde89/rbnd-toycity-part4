@@ -1,14 +1,14 @@
+require 'csv'
 require_relative 'udacidata'
 
 class Product < Udacidata
-  attr_reader :id, :price, :brand, :name
+  attr_reader :id, :price, :brand, :name, :products
 
 @@products = []
 
   def initialize(opts={})
-
     # Get last ID from the database if ID exists
-    get_last_id
+    @@products = [] if get_last_id == 1    
     # Set the ID if it was passed in, otherwise use last existing ID
     @id = opts[:id] ? opts[:id].to_i : @@count_class_instances
     # Increment ID by 1
@@ -26,9 +26,9 @@ class Product < Udacidata
   end
 
   def self.all
+    ##@@products = CSV.parse(@data_path, {:headers => true})
     return @@products
   end
-
 
   private
 

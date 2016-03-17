@@ -5,7 +5,8 @@ require_relative '../data/seeds'
 class TestUdacidata < MiniTest::Test
 
   def setup
-    @data_path = File.dirname(__FILE__) + "/../data/data.csv"
+    @data_path = "/media/sf_Nanodegree_Ruby/toycity_4/rbnd-toycity-part4/data/data.csv"
+    #File.dirname(__FILE__) + "/../data/data.csv"
     CSV.open(@data_path, "wb") do |csv|
       csv << ["id", "brand", "product", "price"]
     end
@@ -37,12 +38,12 @@ class TestUdacidata < MiniTest::Test
       assert_instance_of(Product, product)
     end
   end
-  #
-  # def test_all_method_returns_all_products_in_database
-  #   expected = CSV.read(@data_path).drop(1).length
-  #   actual = Product.all.length
-  #   assert_equal(expected, actual)
-  # end
+
+  def test_all_method_returns_all_products_in_database
+    expected = CSV.read(@data_path).drop(1).length
+    actual = Product.all.length
+    assert_equal(expected, actual)
+  end
   #
   # def test_first_method_returns_product_object
   #   product = Product.first
