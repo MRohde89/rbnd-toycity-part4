@@ -34,6 +34,11 @@ class Product < Udacidata
     return @@products[0..n-1] if n != 0
   end
 
+  def self.last(n = 0)
+    return @@products[-1] if n == 0
+    return @@products[-n..-1] if n != 0
+  end
+
   private
 
     # Reads the last line of the data file, and gets the id if one exists
