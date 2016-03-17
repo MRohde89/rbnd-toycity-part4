@@ -8,7 +8,7 @@ class Product < Udacidata
 
   def initialize(opts={})
     # Get last ID from the database if ID exists
-    @@products = [] if get_last_id == 1    
+    @@products = [] if get_last_id == 1
     # Set the ID if it was passed in, otherwise use last existing ID
     @id = opts[:id] ? opts[:id].to_i : @@count_class_instances
     # Increment ID by 1
@@ -26,8 +26,12 @@ class Product < Udacidata
   end
 
   def self.all
-    ##@@products = CSV.parse(@data_path, {:headers => true})
     return @@products
+  end
+
+  def self.first(n = 0)
+    return @@products[0] if n == 0
+    return @@products[0..n-1] if n != 0
   end
 
   private
