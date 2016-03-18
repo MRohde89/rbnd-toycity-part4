@@ -18,7 +18,7 @@ class Product < Udacidata
     @name = opts[:name]
     @price = opts[:price]
     @@products << self
-    save_to_file([@id, @brand, @name, @price])
+    self.class.save_to_file([@id, @brand, @name, @price])
   end
 
   def self.create(*args, &block)
@@ -38,6 +38,17 @@ class Product < Udacidata
     return @@products[-1] if n == 0
     return @@products[-n..-1] if n != 0
   end
+
+  def self.find(index)
+    return @@products[index-1]
+  end
+
+  def self.destroy(index)
+    Udacidata.delete_from_file(index)
+    deleted = @@products.delete_at(index-1)
+    return deleted
+  end
+
 
   private
 
