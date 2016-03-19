@@ -2,10 +2,10 @@ require 'csv'
 require_relative 'udacidata'
 
 class Product < Udacidata
-  attr_reader :id, :price, :brand, :name, :products
+  attr_accessor :price, :id, :brand, :name
+  attr_reader :products
 
 @@products = []
-
 
   def initialize(opts={})
     # Get last ID from the database if ID exists
@@ -57,6 +57,19 @@ class Product < Udacidata
       filtered_products.select! {|element| eval("element.#{opts.keys[index]} == '#{opts.values[index]}'")}
     end
     return filtered_products
+  end
+
+  def update(opts={})
+    self.class.update_row_in_self(self.id, opts)
+    self.class.update_row_in_db(self)
+    return self.class.all[self.id-1]
+  end
+
+  def self.update_row_in_self(id,opts)
+    opts.length.times do |index|
+      eval("@@products[id-1].#{opts.keys[index]} = '#{opts.values[index]}'")#  if opts.keys[index] != "price"
+      eval("@@products[id-1].#{opts.keys[index]} = #{opts.values[index]}")  if opts.keys[index] == "price"
+    end
   end
 
   private

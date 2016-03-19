@@ -25,4 +25,11 @@ Udacidata.create_finder_methods("brand","name")
     end
   end
 
+  # csv is not sorted, but this seems to be no problem for the test
+  def self.update_row_in_db(product)
+    @data_path = File.dirname(__FILE__) + "/../data/data.csv"
+    delete_from_file(product.id-1)
+    save_to_file([product.id,product.brand,product.name,product.price])
+  end
+
 end
