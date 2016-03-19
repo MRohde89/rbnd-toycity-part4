@@ -6,6 +6,7 @@ class Product < Udacidata
 
 @@products = []
 
+
   def initialize(opts={})
     # Get last ID from the database if ID exists
     @@products = [] if get_last_id == 1
@@ -49,6 +50,14 @@ class Product < Udacidata
     return deleted
   end
 
+  # where clause works also with multiple selections!
+  def self.where(opts={})
+    filtered_products = @@products
+    opts.length.times do |index|
+      filtered_products.select! {|element| eval("element.#{opts.keys[index]} == '#{opts.values[index]}'")}
+    end
+    return filtered_products
+  end
 
   private
 

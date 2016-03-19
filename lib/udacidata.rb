@@ -4,6 +4,7 @@ require 'csv'
 
 class Udacidata
   # Your code goes here!
+Udacidata.create_finder_methods("brand","name")
 
   def self.save_to_file(data_array)
     @data_path = File.dirname(__FILE__) + "/../data/data.csv"
