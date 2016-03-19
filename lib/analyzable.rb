@@ -2,8 +2,8 @@ module Analyzable
 
   def average_price(products)
     entries = products.length
-    products.map! { |product| product.price.to_f}
-    average = (products.inject(:+) / entries).round(2)
+    prices = products.map { |product| product.price.to_f}
+    average = (prices.inject(:+) / entries).round(2)
   end
 
   def print_report(products)
@@ -27,6 +27,7 @@ module Analyzable
     products.each do |product|
       count_hash[product.brand] += 1
     end
+    puts count_hash
     return count_hash
   end
 

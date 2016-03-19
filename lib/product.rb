@@ -9,7 +9,9 @@ class Product < Udacidata
 
   def initialize(opts={})
     # Get last ID from the database if ID exists
-    @@products = [] if get_last_id == 1
+    get_last_id
+    file = File.dirname(__FILE__) + "/../data/data.csv"
+    @@products = [] unless File.exist?(file)
     # Set the ID if it was passed in, otherwise use last existing ID
     @id = opts[:id] ? opts[:id].to_i : @@count_class_instances
     # Increment ID by 1
@@ -21,6 +23,10 @@ class Product < Udacidata
     @@products << self
     self.class.save_to_file([@id, @brand, @name, @price])
   end
+
+  # def to_s
+  #   @@products
+  # end
 
   def self.create(*args, &block)
     return self.new(*args, &block)
@@ -40,15 +46,19 @@ class Product < Udacidata
     return @@products[-n..-1] if n != 0
   end
 
-  def self.find(index)
-    if check_if_id_exists(index-1)
-      then return @@products[index-1]
+  def self.check_if_id_exists(id)
+    return @@products.map {|product| product.id}.include? (id)
+  end
+
+  def self.find(id)
+    if check_if_id_exists(id)
+      then return @@products[id-1]
     else raise ProductNotFoundError, "this product ID does not exist!"
     end
   end
 
   def self.destroy(index)
-    if check_if_id_exists(index-1)
+    if check_if_id_exists(index)
       then
         Udacidata.delete_from_file(index)
         deleted = @@products.delete_at(index-1)
@@ -80,9 +90,7 @@ class Product < Udacidata
     end
   end
 
-  def self.check_if_id_exists(id)
-    return @@products.map {|product| product.id}.include? (id)
-  end
+
 
   private
 
