@@ -67,7 +67,7 @@ class Product < Udacidata
 
   def self.update_row_in_self(id,opts)
     opts.length.times do |index|
-      eval("@@products[id-1].#{opts.keys[index]} = '#{opts.values[index]}'")#  if opts.keys[index] != "price"
+      eval("@@products[id-1].#{opts.keys[index]} = '#{opts.values[index]}'")  if opts.keys[index] != "price"
       eval("@@products[id-1].#{opts.keys[index]} = #{opts.values[index]}")  if opts.keys[index] == "price"
     end
   end
