@@ -5,13 +5,21 @@ class Product < Udacidata
   attr_accessor :price, :id, :brand, :name
   attr_reader :products
 
+# file_path = File.dirname(__FILE__) + "/../data/data.csv"
+# if File.exist?(file_path)
+#   @data_array = CSV.read(file_path)
+#   @@products = []
+#     #Product.create(id: row[0], brand: row[1], name: row[2], price: row[3])
+# else
+# end
+
 @@products = []
+@db_load = 0
 
   def initialize(opts={})
     # Get last ID from the database if ID exists
-    get_last_id
-    file = File.dirname(__FILE__) + "/../data/data.csv"
-    @@products = [] unless File.exist?(file)
+    self.class.load_from_db_if_exist
+    get_last_id unless opts[:id]
     # Set the ID if it was passed in, otherwise use last existing ID
     @id = opts[:id] ? opts[:id].to_i : @@count_class_instances
     # Increment ID by 1
@@ -21,15 +29,24 @@ class Product < Udacidata
     @name = opts[:name]
     @price = opts[:price]
     @@products << self
-    self.class.save_to_file([@id, @brand, @name, @price])
   end
 
-  # def to_s
-  #   @@products
-  # end
+  def self.load_from_db_if_exist
+    file = File.dirname(__FILE__) + "/../data/data.csv"
+    if File.exist?(file) && @db_load == 0
+      data_array = CSV.readlines(file)
+      data_array.each do |row|
+        @db_load = 1
+        puts "loading #{row[0]}"
+        self.new(id: row[0], brand: row[1], name: row[2], price: row[3])
+      end
+    end
+  end
+
 
   def self.create(*args, &block)
-    return self.new(*args, &block)
+    new_product = self.new(*args, &block)
+    Udacidata.save_to_file([new_product.id, new_product.brand, new_product.name, new_product.price])
   end
 
   def self.all

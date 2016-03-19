@@ -35,5 +35,4 @@ Udacidata.create_finder_methods("brand","name")
   end
 
 
-
 end
