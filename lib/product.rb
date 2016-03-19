@@ -41,13 +41,21 @@ class Product < Udacidata
   end
 
   def self.find(index)
-    return @@products[index-1]
+    if check_if_id_exists(index-1)
+      then return @@products[index-1]
+    else raise ProductNotFoundError, "this product ID does not exist!"
+    end
   end
 
   def self.destroy(index)
-    Udacidata.delete_from_file(index)
-    deleted = @@products.delete_at(index-1)
-    return deleted
+    if check_if_id_exists(index-1)
+      then
+        Udacidata.delete_from_file(index)
+        deleted = @@products.delete_at(index-1)
+        return deleted
+      else
+        raise ProductNotFoundError, "this product ID can not be deleted because it does not exist!"
+      end
   end
 
   # where clause works also with multiple selections!
@@ -70,6 +78,10 @@ class Product < Udacidata
       eval("@@products[id-1].#{opts.keys[index]} = '#{opts.values[index]}'")  if opts.keys[index] != "price"
       eval("@@products[id-1].#{opts.keys[index]} = #{opts.values[index]}")  if opts.keys[index] == "price"
     end
+  end
+
+  def self.check_if_id_exists(id)
+    return @@products.map {|product| product.id}.include? (id)
   end
 
   private
