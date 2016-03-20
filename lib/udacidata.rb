@@ -6,6 +6,23 @@ class Udacidata
   # Your code goes here!
 Udacidata.create_finder_methods("brand","name")
 
+  def initialize
+
+  end
+
+  def self.load_from_database
+    data_path = File.dirname(__FILE__) + "/../data/data.csv"
+    database = []
+    if File.exist?(data_path)
+      csv_file = CSV.readlines(data_path, {:headers => true })
+      csv_file.each do |row|
+        database << [row[0], row[1], row[2], row[3]]
+      end
+    end
+    return database
+  end
+
+
   # need to fix to write the header of the file first. if it exists
   def self.save_to_file(data_array)
     @data_path = File.dirname(__FILE__) + "/../data/data.csv"
@@ -26,11 +43,7 @@ Udacidata.create_finder_methods("brand","name")
     end
   end
 
-  # csv is not sorted, but this seems to be no problem for the test
-  # order is needed for the last id!
   def self.update_row_in_db(product)
-    #@data_path = File.dirname(__FILE__) + "/../data/data.csv"
-    #delete_from_file(product.id-1)
     @data_path = File.dirname(__FILE__) + "/../data/data.csv"
     modified_array = []
     CSV.foreach(@data_path) do |line|
@@ -41,11 +54,11 @@ Udacidata.create_finder_methods("brand","name")
     modified_array.each do |line|
       save_to_file(line)
     end
-
-    #save_to_file([product.id,product.brand,product.name,product.price])
-    #self.sort_csv
   end
 
+
+
+## unused sorting algorithm.
   # def self.sort_csv
   #   @data_path = File.dirname(__FILE__) + "/../data/data.csv"
   #   csv_file = CSV.read(@data_path)

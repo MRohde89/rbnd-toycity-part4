@@ -4,14 +4,18 @@ require_relative 'udacidata'
 class Product < Udacidata
   attr_accessor :price, :id, :brand, :name, :products
 
+@@database_loading = Udacidata.load_from_database
 @@products = []
-@db_load = 0
+
+
 
   def initialize(opts={})
     # Get last ID from the database if ID exists
     # self.class.load_from_db_if_exist # see comment at method itself
+    # database_loading.times do |row|
+    #   Product.new(data_)
     get_last_id unless opts[:id]
-    @@products = [] if get_last_id == 1
+    #@@products = [] if get_last_id == 1
     # Set the ID if it was passed in, otherwise use last existing ID
     @id = opts[:id] ? opts[:id].to_i : @@count_class_instances
     # Increment ID by 1
@@ -20,39 +24,33 @@ class Product < Udacidata
     @brand = opts[:brand]
     @name = opts[:name]
     @price = opts[:price]
-    @@products << self
   end
 
   def to_s
     "#{@id}  #{@brand} #{@name}  #{@price}"
   end
 
-
-  # here i wanted to import data from the database
-  # unfortunately this messed up my tests, so for the submitted version
-  # this will be commented
-  # def self.load_from_db_if_exist
-  #   file = File.dirname(__FILE__) + "/../data/data.csv"
-  #   if File.exist?(file) && @db_load == 0
-  #     data_array = CSV.readlines(file, {:headers => true }) # don't read header row
-  #     data_array.each do |row|
-  #       @db_load = 1
-  #       puts row
-  #       puts "loading #{row[0]}"
-  #       self.new(id: row[0], brand: row[1], name: row[2], price: row[3])
-  #     end
-  #   end
-  #   @@product = [] unless File.exist?(file)
-  # end
-
-
   def self.create(*args, &block)
+    iterations = @@database_loading.length
+    @@database_loading.each do |row|
+      puts row
+      loaded_product = Product.new(id: row[0], brand: row[1].to_s, name: row[2].to_s, price: row[3])
+      @@products << loaded_product
+    end
+    @@database_loading = []
     new_product = self.new(*args, &block)
     Udacidata.save_to_file([new_product.id, new_product.brand, new_product.name, new_product.price])
+    @@products << new_product
     return new_product
   end
 
   def self.all
+    iterations = @@database_loading.length
+    @@database_loading.each do |row|
+      loaded_product = Product.new(id: row[0], brand: row[1].to_s, name: row[2].to_s, price: row[3])
+      @@products << loaded_product
+    end
+    @@database_loading = []
     return @@products
   end
 
