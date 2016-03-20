@@ -10,7 +10,7 @@ Udacidata.create_finder_methods("brand","name")
 
   end
 
-  def self.load_from_database
+  def self.load_from_csv
     data_path = File.dirname(__FILE__) + "/../data/data.csv"
     database = []
     if File.exist?(data_path)

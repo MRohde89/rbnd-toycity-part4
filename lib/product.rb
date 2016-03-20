@@ -4,7 +4,7 @@ require_relative 'udacidata'
 class Product < Udacidata
   attr_accessor :price, :id, :brand, :name, :products
 
-@@database_loading = Udacidata.load_from_database
+@@database_loading = Udacidata.load_from_csv
 @@products = []
 
 
@@ -12,10 +12,8 @@ class Product < Udacidata
   def initialize(opts={})
     # Get last ID from the database if ID exists
     # self.class.load_from_db_if_exist # see comment at method itself
-    # database_loading.times do |row|
-    #   Product.new(data_)
     get_last_id unless opts[:id]
-    #@@products = [] if get_last_id == 1
+    @@products = [] if get_last_id == 1
     # Set the ID if it was passed in, otherwise use last existing ID
     @id = opts[:id] ? opts[:id].to_i : @@count_class_instances
     # Increment ID by 1
@@ -27,17 +25,20 @@ class Product < Udacidata
   end
 
   def to_s
-    "#{@id}  #{@brand} #{@name}  #{@price}"
+    "id: #{@id}, brand: #{@brand}, name: #{@name}, price: #{@price}"
   end
 
-  def self.create(*args, &block)
+  def self.load_from_database
     iterations = @@database_loading.length
     @@database_loading.each do |row|
-      puts row
       loaded_product = Product.new(id: row[0], brand: row[1].to_s, name: row[2].to_s, price: row[3])
       @@products << loaded_product
     end
     @@database_loading = []
+  end
+
+  def self.create(*args, &block)
+    load_from_database
     new_product = self.new(*args, &block)
     Udacidata.save_to_file([new_product.id, new_product.brand, new_product.name, new_product.price])
     @@products << new_product
@@ -45,12 +46,7 @@ class Product < Udacidata
   end
 
   def self.all
-    iterations = @@database_loading.length
-    @@database_loading.each do |row|
-      loaded_product = Product.new(id: row[0], brand: row[1].to_s, name: row[2].to_s, price: row[3])
-      @@products << loaded_product
-    end
-    @@database_loading = []
+    load_from_database
     return @@products
   end
 
