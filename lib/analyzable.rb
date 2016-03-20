@@ -7,7 +7,6 @@ module Analyzable
   end
 
   def print_report(products)
-
     puts "Inventory by Brand:"
     brands = count_by_brand(products)
     brands.each do |key, value|
