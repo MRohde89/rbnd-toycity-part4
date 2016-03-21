@@ -11,7 +11,6 @@ class Udacidata
 Udacidata.create_finder_methods("brand","name")
 
   # load entries from csv file
-  # used in the Product Class before initializing to load the data just once!
   def self.load_from_csv
     if File.exist?(@@data_path)
       csv_file = CSV.readlines(@@data_path, {:headers => true })
